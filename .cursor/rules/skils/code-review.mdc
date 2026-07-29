@@ -1,0 +1,36 @@
+---
+description: After any code change, run npm run check and summarize failures with fixes
+alwaysApply: true
+---
+
+# Code review rule
+
+After every edit session where you **add, change, or delete** project code, run the package.json `check` script before finishing your reply:
+
+```bash
+npm run check
+```
+
+This runs ESLint (`--fix`), Prettier (`--write`), and Playwright tests.
+
+## When to run
+
+- Required after implementing or modifying features, fixes, refactors, or deletions
+- Skip only for pure docs/plan updates with no code/config changes, or when the user explicitly says not to run check
+
+## After it finishes
+
+1. If Prettier/ESLint rewrote files, keep those changes (do not revert formatting).
+2. Summarize results for the user in plain language:
+   - **Pass:** briefly say check passed
+   - **Fail:** list what is bad (tool + file/test + message), then **how to fix** each item
+3. Fix clear, safe issues yourself when caused by your changes, then re-run `npm run check` once.
+4. Do not hide failures; never claim check passed if it did not.
+
+## Summary format (on failure)
+
+```markdown
+### Check results
+- **Problem:** …
+- **Fix:** …
+```
