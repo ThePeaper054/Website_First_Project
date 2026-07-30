@@ -12,15 +12,32 @@ const navLinks = [
 
 let scrollAnimationId = 0;
 
+/**
+ * Determines the height of the page header used as a navigation offset.
+ *
+ * @returns The header height in pixels, or `68` when no header is found.
+ */
 function getNavOffset() {
   const header = document.querySelector("header");
   return header?.getBoundingClientRect().height ?? 68;
 }
 
+/**
+ * Calculates a cubic ease-out interpolation value.
+ *
+ * @param t - The normalized progress value, typically between `0` and `1`
+ * @returns The interpolated progress value
+ */
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+/**
+ * Smoothly scrolls to the section identified by a URL hash.
+ *
+ * @param hash - The hash identifying the target section.
+ * @param updateHistory - Whether to add the hash to browser history.
+ */
 function scrollToSection(hash: string, updateHistory = true) {
   const id = hash.replace("#", "");
   const el = document.getElementById(id);
@@ -62,6 +79,11 @@ function scrollToSection(hash: string, updateHistory = true) {
   }
 }
 
+/**
+ * Renders a fixed navigation header with smooth scrolling links to page sections.
+ *
+ * Synchronizes scrolling with the current URL hash and responds to hash changes.
+ */
 export function Nav() {
   useEffect(() => {
     const scrollFromLocation = () => {
