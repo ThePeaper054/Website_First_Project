@@ -12,9 +12,10 @@ import {
 import { dictionaries, type TranslationKey } from "./dictionaries";
 import {
   DEFAULT_LOCALE,
+  LOCALE_COOKIE_KEY,
   LOCALE_STORAGE_KEY,
-  isLocale,
-  localeMeta,
+  localeDir,
+  resolveClientLocale,
   type Locale,
 } from "./locales";
 
@@ -26,38 +27,49 @@ type LocaleContextValue = {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
 /**
  * Applies the active locale to the document root (`lang` and `dir`).
  */
 function applyDocumentLocale(locale: Locale) {
   const root = document.documentElement;
   root.lang = locale;
-  root.dir = localeMeta[locale].rtl ? "rtl" : "ltr";
+  root.dir = localeDir(locale);
+}
+
+/**
+ * Persists locale to localStorage and a first-party cookie (for SSR).
+ */
+function persistLocale(locale: Locale) {
+  window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+  document.cookie = `${LOCALE_COOKIE_KEY}=${encodeURIComponent(locale)};path=/;max-age=${COOKIE_MAX_AGE};SameSite=Lax`;
 }
 
 /**
  * Provides locale state, translations, and document lang/dir updates.
  */
-export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
-  const [hydrated, setHydrated] = useState(false);
+export function LocaleProvider({
+  children,
+  initialLocale = DEFAULT_LOCALE,
+}: {
+  children: ReactNode;
+  initialLocale?: Locale;
+}) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-    const initial = isLocale(stored) ? stored : DEFAULT_LOCALE;
-    setLocaleState(initial);
-    applyDocumentLocale(initial);
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    applyDocumentLocale(locale);
-    window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
-  }, [locale, hydrated]);
+    // Same order as localeBootScript: localStorage → cookie/SSR fallback
+    const next = resolveClientLocale(initialLocale);
+    setLocaleState(next);
+    applyDocumentLocale(next);
+    persistLocale(next);
+  }, [initialLocale]);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
+    applyDocumentLocale(next);
+    persistLocale(next);
   }, []);
 
   const t = useCallback(

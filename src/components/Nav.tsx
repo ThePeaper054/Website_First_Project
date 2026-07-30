@@ -109,7 +109,10 @@ export function Nav() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-[var(--nav-height)] border-b border-charcoal/10 bg-surface backdrop-blur-md">
+    <header
+      dir="ltr"
+      className="fixed inset-x-0 top-0 z-50 h-[var(--nav-height)] border-b border-charcoal/10 bg-surface backdrop-blur-md"
+    >
       <div className="mx-auto flex h-full max-w-6xl items-center gap-4 px-4 sm:px-6">
         <nav aria-label={t("nav.primaryAria")} className="min-w-0 flex-1">
           <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:gap-x-7">
@@ -121,7 +124,7 @@ export function Nav() {
                     e.preventDefault();
                     scrollToSection(link.href);
                   }}
-                  className="font-[family-name:var(--font-body)] text-sm font-medium tracking-wide text-charcoal/80 transition-colors hover:text-blush-deep sm:text-[0.95rem]"
+                  className="font-[family-name:var(--font-body),var(--font-cyrillic)] text-sm font-medium tracking-wide text-charcoal/80 transition-colors hover:text-blush-deep sm:text-[0.95rem]"
                 >
                   {t(link.labelKey)}
                 </a>

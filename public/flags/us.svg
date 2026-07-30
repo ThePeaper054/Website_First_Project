@@ -7,4 +7,38 @@
   <rect y="27.69" width="60" height="3.08" fill="#fff"/>
   <rect y="33.85" width="60" height="3.08" fill="#fff"/>
   <rect width="24" height="21.54" fill="#3C3B6E"/>
+  <g fill="#fff">
+    <circle cx="4" cy="3.5" r="0.9"/>
+    <circle cx="8.5" cy="3.5" r="0.9"/>
+    <circle cx="13" cy="3.5" r="0.9"/>
+    <circle cx="17.5" cy="3.5" r="0.9"/>
+    <circle cx="22" cy="3.5" r="0.9"/>
+    <circle cx="6.25" cy="6.2" r="0.9"/>
+    <circle cx="10.75" cy="6.2" r="0.9"/>
+    <circle cx="15.25" cy="6.2" r="0.9"/>
+    <circle cx="19.75" cy="6.2" r="0.9"/>
+    <circle cx="4" cy="8.9" r="0.9"/>
+    <circle cx="8.5" cy="8.9" r="0.9"/>
+    <circle cx="13" cy="8.9" r="0.9"/>
+    <circle cx="17.5" cy="8.9" r="0.9"/>
+    <circle cx="22" cy="8.9" r="0.9"/>
+    <circle cx="6.25" cy="11.6" r="0.9"/>
+    <circle cx="10.75" cy="11.6" r="0.9"/>
+    <circle cx="15.25" cy="11.6" r="0.9"/>
+    <circle cx="19.75" cy="11.6" r="0.9"/>
+    <circle cx="4" cy="14.3" r="0.9"/>
+    <circle cx="8.5" cy="14.3" r="0.9"/>
+    <circle cx="13" cy="14.3" r="0.9"/>
+    <circle cx="17.5" cy="14.3" r="0.9"/>
+    <circle cx="22" cy="14.3" r="0.9"/>
+    <circle cx="6.25" cy="17" r="0.9"/>
+    <circle cx="10.75" cy="17" r="0.9"/>
+    <circle cx="15.25" cy="17" r="0.9"/>
+    <circle cx="19.75" cy="17" r="0.9"/>
+    <circle cx="4" cy="19.7" r="0.9"/>
+    <circle cx="8.5" cy="19.7" r="0.9"/>
+    <circle cx="13" cy="19.7" r="0.9"/>
+    <circle cx="17.5" cy="19.7" r="0.9"/>
+    <circle cx="22" cy="19.7" r="0.9"/>
+  </g>
 </svg>
