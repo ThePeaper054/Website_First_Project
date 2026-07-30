@@ -104,7 +104,7 @@ export function Nav() {
         <a
           href="#home"
           className="shrink-0"
-          aria-label="Nail Studio home"
+          aria-label="Nara Nails home"
           onClick={(e) => {
             e.preventDefault();
             scrollToSection("#home");
@@ -112,7 +112,7 @@ export function Nav() {
         >
           <Image
             src="/logo.svg"
-            alt="Nail Studio"
+            alt="Nara Nails"
             width={140}
             height={42}
             priority
