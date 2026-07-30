@@ -15,7 +15,7 @@ const body = Heebo({
 });
 
 export const metadata: Metadata = {
-  title: "Nail Studio",
+  title: "Nara Nails",
   description: "Private nail studio — gallery, about, and contact",
 };
 
