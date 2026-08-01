@@ -54,7 +54,10 @@ function easeOutCubic(t: number) {
 }
 
 /**
- * Resolves a hash to the canonical section hash (applies legacy aliases).
+ * Converts a section hash to its canonical form, including legacy aliases.
+ *
+ * @param hash - A section identifier with or without a leading hash
+ * @returns The canonical section hash
  */
 function resolveSectionHash(hash: string) {
   const normalized = hash.startsWith("#") ? hash : `#${hash}`;
@@ -135,8 +138,10 @@ function scrollToSection(hash: string, updateHistory = true) {
 }
 
 /**
- * Retries scrolling until the section exists (e.g. after a client navigation).
- * A newer call (or route change) cancels outstanding retries.
+ * Scrolls to a section once it becomes available after navigation.
+ *
+ * @param hash - The section hash to scroll to
+ * @param updateHistory - Whether to update the browser history with the hash
  */
 function scrollWhenReady(hash: string, updateHistory = true) {
   const requestId = ++scrollWhenReadyId;
@@ -152,9 +157,7 @@ function scrollWhenReady(hash: string, updateHistory = true) {
 }
 
 /**
- * Renders a fixed header with a left hamburger that opens a slide-out menu.
- *
- * Home, Artwork, Accessories, and Contact scroll to page sections; shop links go to `/shop`.
+ * Renders a fixed header and accessible slide-out navigation menu for site and section navigation.
  */
 export function Nav() {
   const { t } = useLocale();

@@ -25,7 +25,10 @@ export const SHOP_CATEGORIES = [
 export type ShopCategoryId = (typeof SHOP_CATEGORIES)[number]["id"];
 
 /**
- * Returns whether a string is a known shop category id.
+ * Determines whether a value identifies a known shop category.
+ *
+ * @param value - The value to check.
+ * @returns `true` if the value is a known shop category ID, `false` otherwise.
  */
 export function isShopCategoryId(
   value: string | null | undefined,

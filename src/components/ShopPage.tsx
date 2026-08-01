@@ -7,21 +7,36 @@ import { useEffect, useRef, useState } from "react";
 
 const UNKNOWN_CATEGORY_KEY = "nara:shop-unknown-category";
 
+/**
+ * Determines whether an unknown-category notice flag is stored for the current session.
+ *
+ * @returns `true` if the flag is set, `false` otherwise.
+ */
 function readUnknownCategoryFlag() {
   if (typeof window === "undefined") return false;
   return sessionStorage.getItem(UNKNOWN_CATEGORY_KEY) === "1";
 }
 
+/**
+ * Records that an unknown shop category was encountered in session storage.
+ */
 function writeUnknownCategoryFlag() {
   sessionStorage.setItem(UNKNOWN_CATEGORY_KEY, "1");
 }
 
+/**
+ * Clears the stored indicator for an unknown shop category.
+ */
 function clearUnknownCategoryFlag() {
   sessionStorage.removeItem(UNKNOWN_CATEGORY_KEY);
 }
 
 /**
- * Shop placeholder that surfaces an optional category filter from the URL.
+ * Displays the shop page with an optional validated category filter.
+ *
+ * Invalid category parameters display a localized notice and redirect to the default shop URL.
+ *
+ * @returns The rendered shop page.
  */
 export function ShopPage() {
   const { t } = useLocale();

@@ -3,7 +3,9 @@ import { ShopPage } from "@/components/ShopPage";
 import { Suspense } from "react";
 
 /**
- * Shop route — products and search/filter UI will be added later.
+ * Renders the shop page with a loading state while its content is unavailable.
+ *
+ * @returns The shop page or its loading fallback
  */
 export default function Shop() {
   return (

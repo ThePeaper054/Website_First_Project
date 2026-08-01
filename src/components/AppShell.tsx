@@ -8,6 +8,12 @@ import {
 import { Nav } from "@/components/Nav";
 import type { ReactNode } from "react";
 
+/**
+ * Renders navigation, page content, and language controls with menu-aware accessibility behavior.
+ *
+ * @param children - The page content rendered within the application shell.
+ * @returns The application shell content.
+ */
 function AppShellContent({ children }: { children: ReactNode }) {
   const { menuOpen } = useMenuModality();
 
