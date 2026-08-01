@@ -205,7 +205,7 @@ export function Nav() {
     // App Router can drop hashes on client navigations; keep intent in a ref.
     // Arrival from another page teleports (no glide).
     pendingHashRef.current = normalized;
-    router.push("/");
+    router.push("/", { scroll: false });
   };
 
   useEffect(() => {

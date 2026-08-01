@@ -11,7 +11,7 @@ description: >-
 
 After every edit session where you **add, change, or delete** project code, do this **before finishing your reply**, in order:
 
-1. **Apply all project rules** — re-read and follow every rule under `.cursor/rules/` (including nested folders). Fix anything that violates those rules.
+1. **Apply all project rules** — re-read and follow every rule under `.cursor/rules/` (including nested folders), except skip `.cursor/rules/skils/code-review.mdc` to avoid recursion. Fix anything that violates those rules.
 2. **Apply all skills** — discover and follow every skill:
    - Project: `.cursor/skills/*/SKILL.md`
    - Personal: `~/.cursor/skills/*/SKILL.md`
@@ -44,6 +44,7 @@ This runs ESLint (`--fix`), Prettier (`--write`), and Playwright tests. If check
 
 ```markdown
 ### Check results
+
 - **Problem:** …
 - **Fix:** …
 ```

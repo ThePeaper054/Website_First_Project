@@ -124,7 +124,7 @@ export function ArtworkSection() {
                 data-product-tile
                 className="group w-[calc((100%-2rem)/3)] min-w-[calc((100%-2rem)/3)] shrink-0"
               >
-                <ProductCard product={product} />
+                <ProductCard product={product} sizes="33vw" />
               </div>
             ))}
           </div>
