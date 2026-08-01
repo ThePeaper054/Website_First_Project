@@ -93,7 +93,7 @@ export function ArtworkSection() {
   }
 
   const arrowClass =
-    "absolute z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-surface/95 text-charcoal/80 ring-1 ring-charcoal/10 transition-colors duration-300 hover:bg-surface hover:text-blush-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blush-deep disabled:pointer-events-none disabled:opacity-35";
+    "absolute z-20 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-surface text-charcoal/80 shadow-sm ring-1 ring-charcoal/10 transition-colors duration-300 hover:bg-surface hover:text-blush-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blush-deep disabled:pointer-events-none disabled:cursor-default disabled:opacity-35";
 
   return (
     <section
@@ -114,17 +114,32 @@ export function ArtworkSection() {
         </div>
 
         <div className="relative" dir="ltr">
+          <div
+            ref={scrollerRef}
+            className="relative z-0 flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {PRODUCTS.map((product) => (
+              <div
+                key={product.id}
+                data-product-tile
+                className="group w-[calc((100%-2rem)/3)] min-w-[calc((100%-2rem)/3)] shrink-0"
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+
           <button
             type="button"
             onClick={() => glide("prev")}
             disabled={!canPrev}
             aria-label={t("artwork.scrollPrevAria")}
-            className={`${arrowClass} left-0 top-[calc((100%-3.5rem)/2)] -translate-x-1 sm:-translate-x-3`}
+            className={`${arrowClass} left-0 top-[calc((100%-3.5rem)/2)]`}
           >
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
-              className="h-5 w-5"
+              className="pointer-events-none h-5 w-5"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
@@ -142,12 +157,12 @@ export function ArtworkSection() {
             onClick={() => glide("next")}
             disabled={!canNext}
             aria-label={t("artwork.scrollNextAria")}
-            className={`${arrowClass} right-0 top-[calc((100%-3.5rem)/2)] translate-x-1 sm:translate-x-3`}
+            className={`${arrowClass} right-0 top-[calc((100%-3.5rem)/2)]`}
           >
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
-              className="h-5 w-5"
+              className="pointer-events-none h-5 w-5"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
@@ -159,21 +174,6 @@ export function ArtworkSection() {
               />
             </svg>
           </button>
-
-          <div
-            ref={scrollerRef}
-            className="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
-            {PRODUCTS.map((product) => (
-              <div
-                key={product.id}
-                data-product-tile
-                className="group w-[calc((100%-2rem)/3)] min-w-[calc((100%-2rem)/3)] shrink-0"
-              >
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
