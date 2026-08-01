@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40" role="img" aria-label="Israel">
+  <rect width="60" height="40" fill="#fff"/>
+  <rect y="4" width="60" height="5" fill="#0038B8"/>
+  <rect y="31" width="60" height="5" fill="#0038B8"/>
+  <path
+    fill="none"
+    stroke="#0038B8"
+    stroke-width="1.8"
+    stroke-linejoin="miter"
+    d="M30 12.2 L36.2 23.2 H23.8 Z"
+  />
+  <path
+    fill="none"
+    stroke="#0038B8"
+    stroke-width="1.8"
+    stroke-linejoin="miter"
+    d="M30 27.8 L23.8 16.8 H36.2 Z"
+  />
+</svg>

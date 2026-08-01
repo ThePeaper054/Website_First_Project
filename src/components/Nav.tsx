@@ -1,14 +1,19 @@
 "use client";
 
 import Image from "next/image";
+import { useLocale } from "@/i18n/LocaleProvider";
+import type { TranslationKey } from "@/i18n/dictionaries";
 import { useEffect } from "react";
 
 const navLinks = [
-  { href: "#home", label: "Home" },
-  { href: "#gallery", label: "Gallery" },
-  { href: "#about", label: "About" },
-  { href: "#contact", label: "Contact" },
-] as const;
+  { href: "#home", labelKey: "nav.home" },
+  { href: "#gallery", labelKey: "nav.gallery" },
+  { href: "#about", labelKey: "nav.about" },
+  { href: "#contact", labelKey: "nav.contact" },
+] as const satisfies ReadonlyArray<{
+  href: string;
+  labelKey: TranslationKey;
+}>;
 
 let scrollAnimationId = 0;
 
@@ -85,6 +90,8 @@ function scrollToSection(hash: string, updateHistory = true) {
  * Synchronizes scrolling with the current URL hash and responds to hash changes.
  */
 export function Nav() {
+  const { t } = useLocale();
+
   useEffect(() => {
     const scrollFromLocation = () => {
       const { hash } = window.location;
@@ -102,9 +109,12 @@ export function Nav() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-[var(--nav-height)] border-b border-charcoal/10 bg-surface backdrop-blur-md">
+    <header
+      dir="ltr"
+      className="fixed inset-x-0 top-0 z-50 h-[var(--nav-height)] border-b border-charcoal/10 bg-surface backdrop-blur-md"
+    >
       <div className="mx-auto flex h-full max-w-6xl items-center gap-4 px-4 sm:px-6">
-        <nav aria-label="Primary" className="min-w-0 flex-1">
+        <nav aria-label={t("nav.primaryAria")} className="min-w-0 flex-1">
           <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:gap-x-7">
             {navLinks.map((link) => (
               <li key={link.href}>
@@ -114,9 +124,9 @@ export function Nav() {
                     e.preventDefault();
                     scrollToSection(link.href);
                   }}
-                  className="font-[family-name:var(--font-body)] text-sm font-medium tracking-wide text-charcoal/80 transition-colors hover:text-blush-deep sm:text-[0.95rem]"
+                  className="font-[family-name:var(--font-body),var(--font-cyrillic)] text-sm font-medium tracking-wide text-charcoal/80 transition-colors hover:text-blush-deep sm:text-[0.95rem]"
                 >
-                  {link.label}
+                  {t(link.labelKey)}
                 </a>
               </li>
             ))}
@@ -126,7 +136,7 @@ export function Nav() {
         <a
           href="#home"
           className="shrink-0"
-          aria-label="Nara Nails home"
+          aria-label={t("nav.homeAria")}
           onClick={(e) => {
             e.preventDefault();
             scrollToSection("#home");
