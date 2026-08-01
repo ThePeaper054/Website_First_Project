@@ -5,8 +5,8 @@ import type { TranslationKey } from "@/i18n/dictionaries";
 
 const sections = [
   { id: "home", labelKey: "nav.home" },
-  { id: "gallery", labelKey: "nav.gallery" },
-  { id: "about", labelKey: "nav.about" },
+  { id: "artwork", labelKey: "nav.artwork" },
+  { id: "accessories", labelKey: "nav.accessories" },
   { id: "contact", labelKey: "nav.contact" },
 ] as const satisfies ReadonlyArray<{
   id: string;

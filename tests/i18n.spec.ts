@@ -36,9 +36,7 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
-    await expect(
-      page.getByRole("navigation", { name: "Primary" }),
-    ).toContainText("Home");
+    await expect(page.locator("#home")).toContainText("Home");
 
     const switcher = await languageTrigger(page);
     await switcher.hover();
@@ -46,18 +44,34 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "he");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(
-      page.getByRole("navigation", { name: "ניווט ראשי" }),
-    ).toContainText("בית");
+    await expect(page.locator("#home")).toContainText("בית");
 
     await page.reload();
     await disableNextDevOverlay(page);
 
     await expect(page.locator("html")).toHaveAttribute("lang", "he");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    await expect(page.locator("#home")).toContainText("בית");
+  });
+
+  test("translates nav menu chrome", async ({ page }) => {
+    await gotoApp(page);
+
+    const switcher = await languageTrigger(page);
+    await switcher.hover();
+    await page.getByRole("menuitem", { name: "עברית" }).click();
+
+    await page.getByRole("button", { name: "פתח תפריט" }).click();
+    const nav = page.getByRole("navigation", { name: "ניווט ראשי" });
+    await expect(nav).toBeVisible();
+    await expect(nav.getByRole("link", { name: "בית" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "יצירות" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "כל החנות" })).toBeVisible();
     await expect(
-      page.getByRole("navigation", { name: "ניווט ראשי" }),
-    ).toContainText("בית");
+      nav.getByRole("button", { name: "מה הכי מתאים לי" }),
+    ).toBeVisible();
+    await expect(nav.getByRole("link", { name: "אקססוריז" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "צור קשר" })).toBeVisible();
   });
 
   test("opens on click and selects a language", async ({ page }) => {
@@ -70,9 +84,7 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "ru");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
-    await expect(
-      page.getByRole("navigation", { name: "Основная навигация" }),
-    ).toContainText("Главная");
+    await expect(page.locator("#home")).toContainText("Главная");
   });
 
   test("closes language menu when pointer leaves", async ({ page }) => {
@@ -169,9 +181,7 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "ru");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
-    await expect(
-      page.getByRole("navigation", { name: "Основная навигация" }),
-    ).toContainText("Главная");
+    await expect(page.locator("#home")).toContainText("Главная");
   });
 
   test("uses cookie when localStorage has no locale", async ({
@@ -193,9 +203,7 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(
-      page.getByRole("navigation", { name: "التنقل الرئيسي" }),
-    ).toContainText("الرئيسية");
+    await expect(page.locator("#home")).toContainText("الرئيسية");
   });
 });
 
@@ -213,8 +221,6 @@ test.describe("i18n touch", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(
-      page.getByRole("navigation", { name: "التنقل الرئيسي" }),
-    ).toContainText("الرئيسية");
+    await expect(page.locator("#home")).toContainText("الرئيسية");
   });
 });
