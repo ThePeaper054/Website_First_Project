@@ -179,21 +179,8 @@ test.describe("nav menu", () => {
     await expect(page.getByRole("button", { name: "Open menu" })).toBeFocused();
 
     await openMenu(page);
-    const dialog = page.getByRole("dialog", { name: "Menu" });
-    const box = await dialog.boundingBox();
-    expect(box).toBeTruthy();
-    // Click the backdrop gutter to the right of the drawer; clamp so narrow
-    // viewports (drawer is min(22rem, 88vw)) still land inside the viewport.
-    const viewport = page.viewportSize();
-    expect(viewport).toBeTruthy();
-    const gutterStart = box!.x + box!.width;
-    const gutterEnd = viewport!.width;
-    expect(gutterEnd).toBeGreaterThan(gutterStart);
-    const clickX = Math.min(
-      gutterStart + 48,
-      gutterStart + (gutterEnd - gutterStart) / 2,
-    );
-    await page.mouse.click(clickX, box!.y + box!.height / 2);
+    // Backdrop is the last "Close menu" control (header toggle is first).
+    await page.getByRole("button", { name: "Close menu" }).last().click();
     await expect(
       page.getByRole("navigation", { name: "Primary" }),
     ).toBeHidden();
@@ -215,6 +202,22 @@ test.describe("nav menu", () => {
     await expect(
       page.getByRole("button", { name: /Change language/i }),
     ).toBeVisible();
+  });
+
+  test("shop page lists all products", async ({ page }) => {
+    await gotoApp(page, "/shop");
+
+    await expect(
+      page.getByRole("heading", { name: "Shop", level: 1 }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Artwork 01", level: 2 }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Artwork 10", level: 2 }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2 })).toHaveCount(10);
+    await expect(page.getByText("₪89").first()).toBeVisible();
   });
 
   test("What's best category navigates to filtered shop", async ({ page }) => {

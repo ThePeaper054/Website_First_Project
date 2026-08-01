@@ -1,6 +1,8 @@
 "use client";
 
+import { ProductCard } from "@/components/ProductCard";
 import { useLocale } from "@/i18n/LocaleProvider";
+import { PRODUCTS } from "@/lib/products";
 import { isShopCategoryId, SHOP_CATEGORIES } from "@/lib/shopCategories";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -35,6 +37,7 @@ function clearUnknownCategoryFlag() {
  * Displays the shop page with an optional validated category filter.
  *
  * Invalid category parameters display a localized notice and redirect to the default shop URL.
+ * All products render in a downward page-flow grid (no nested scroller).
  *
  * @returns The rendered shop page.
  */
@@ -80,21 +83,37 @@ export function ShopPage() {
   }, [category, showUnknownNotice]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6 pt-[var(--nav-height)]">
-      <h1
-        ref={headingRef}
-        tabIndex={-1}
-        className="font-[family-name:var(--font-display),var(--font-arabic),var(--font-cyrillic)] text-3xl font-medium tracking-wide text-charcoal/70 outline-none sm:text-4xl"
-      >
-        {categoryMeta ? t(categoryMeta.labelKey) : t("shop.title")}
-      </h1>
-      <p className="mt-3 max-w-md text-center font-[family-name:var(--font-body),var(--font-cyrillic)] text-sm text-charcoal/50 sm:text-base">
-        {showUnknownNotice
-          ? t("shop.unknownCategory")
-          : categoryMeta
-            ? t("shop.filteredHint")
-            : t("shop.allHint")}
-      </p>
+    <main className="px-6 pt-[var(--nav-height)] pb-16">
+      <div className="mx-auto w-full max-w-6xl">
+        <header className="mb-8 pt-10 text-center sm:pt-14">
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="font-[family-name:var(--font-display),var(--font-arabic),var(--font-cyrillic)] text-3xl font-medium tracking-wide text-charcoal outline-none sm:text-4xl"
+          >
+            {categoryMeta ? t(categoryMeta.labelKey) : t("shop.title")}
+          </h1>
+          <p className="mt-3 max-w-md mx-auto font-[family-name:var(--font-body),var(--font-arabic),var(--font-cyrillic)] text-sm text-charcoal/50 sm:text-base">
+            {showUnknownNotice
+              ? t("shop.unknownCategory")
+              : categoryMeta
+                ? t("shop.filteredHint")
+                : t("shop.allHint")}
+          </p>
+        </header>
+
+        <ul className="grid list-none grid-cols-2 gap-4 sm:grid-cols-3">
+          {PRODUCTS.map((product) => (
+            <li key={product.id} className="group">
+              <ProductCard
+                product={product}
+                headingLevel={2}
+                sizes="(max-width: 640px) 50vw, 33vw"
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
     </main>
   );
 }

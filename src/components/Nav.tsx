@@ -83,13 +83,14 @@ function cancelPendingScrolls() {
 }
 
 /**
- * Smoothly scrolls to the section identified by a URL hash.
+ * Scrolls to the section identified by a URL hash.
  *
  * @param hash - The hash identifying the target section.
  * @param updateHistory - Whether to sync the hash into the URL (replaceState).
+ * @param smooth - When true, eases to the section; when false, jumps instantly.
  * @returns Whether the target section was found.
  */
-function scrollToSection(hash: string, updateHistory = true) {
+function scrollToSection(hash: string, updateHistory = true, smooth = true) {
   const normalized = resolveSectionHash(hash);
   const id = normalized.slice(1);
   const el = document.getElementById(id);
@@ -110,6 +111,13 @@ function scrollToSection(hash: string, updateHistory = true) {
   }
 
   if (Math.abs(distance) < 1) return true;
+
+  // Cross-page / cold loads teleport; same-page menu links glide.
+  if (!smooth) {
+    scrollAnimationId += 1;
+    window.scrollTo({ top: targetY, left: 0, behavior: "auto" });
+    return true;
+  }
 
   // ~3/4 of previous speed ⇒ duration × 4/3
   const duration = Math.min(1467, Math.max(600, Math.abs(distance) * 0.733));
@@ -142,13 +150,14 @@ function scrollToSection(hash: string, updateHistory = true) {
  *
  * @param hash - The section hash to scroll to
  * @param updateHistory - Whether to update the browser history with the hash
+ * @param smooth - When true, eases to the section; when false, jumps instantly
  */
-function scrollWhenReady(hash: string, updateHistory = true) {
+function scrollWhenReady(hash: string, updateHistory = true, smooth = true) {
   const requestId = ++scrollWhenReadyId;
 
   const attempt = (attempts: number) => {
     if (requestId !== scrollWhenReadyId) return;
-    if (scrollToSection(hash, updateHistory)) return;
+    if (scrollToSection(hash, updateHistory, smooth)) return;
     if (attempts >= 40) return;
     window.requestAnimationFrame(() => attempt(attempts + 1));
   };
@@ -189,12 +198,14 @@ export function Nav() {
     const normalized = hash.startsWith("#") ? hash : `#${hash}`;
     closeMenu();
     if (pathname === "/") {
-      scrollWhenReady(normalized, true);
+      // Already on home — glide to the section.
+      scrollWhenReady(normalized, true, true);
       return;
     }
     // App Router can drop hashes on client navigations; keep intent in a ref.
+    // Arrival from another page teleports (no glide).
     pendingHashRef.current = normalized;
-    router.push("/");
+    router.push("/", { scroll: false });
   };
 
   useEffect(() => {
@@ -203,16 +214,18 @@ export function Nav() {
     const pending = pendingHashRef.current;
     if (pending) {
       pendingHashRef.current = null;
-      scrollWhenReady(pending, true);
+      scrollWhenReady(pending, true, false);
     } else if (window.location.hash) {
-      scrollWhenReady(window.location.hash, false);
+      // Direct load or restore with a hash — teleport into place.
+      scrollWhenReady(window.location.hash, false, false);
     }
 
     const scrollFromLocation = () => {
       if (pathname !== "/") return;
       const { hash } = window.location;
       if (!hash) return;
-      scrollWhenReady(hash, false);
+      // Same-document hash/popstate — glide.
+      scrollWhenReady(hash, false, true);
     };
 
     window.addEventListener("hashchange", scrollFromLocation);

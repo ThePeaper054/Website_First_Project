@@ -1,17 +1,21 @@
 ---
-description: After code changes, apply all project rules and skills, then run npm run check
-alwaysApply: true
+name: code-review
+description: >-
+  After code is added, changed, or deleted, apply all project rules and all
+  skills, then run npm run check. Use when finishing an edit session, when the
+  user asks for code review / check / rules+skills pass, or whenever project
+  code was modified in the current turn.
 ---
 
 # Code review
 
 After every edit session where you **add, change, or delete** project code, do this **before finishing your reply**, in order:
 
-1. **Apply all project rules** — re-read and follow every rule under `.cursor/rules/` (including nested folders), except skip this file (`.cursor/rules/skils/code-review.mdc`) to avoid recursion. Fix anything that violates those rules.
+1. **Apply all project rules** — re-read and follow every rule under `.cursor/rules/` (including nested folders), except skip `.cursor/rules/skils/code-review.mdc` to avoid recursion. Fix anything that violates those rules.
 2. **Apply all skills** — discover and follow every skill:
    - Project: `.cursor/skills/*/SKILL.md`
    - Personal: `~/.cursor/skills/*/SKILL.md`
-   - Skip re-entering this code-review skill/rule (no recursion).
+   - Skip re-entering this code-review skill (no recursion).
    - For each other skill: read its `SKILL.md` and run its workflow when its triggers match the current session (errors, user ask, or the skill’s “when to run” conditions). If a skill’s job clearly applies to the files you just changed, run it.
 3. **Run the package.json `check` script:**
 
@@ -40,6 +44,7 @@ This runs ESLint (`--fix`), Prettier (`--write`), and Playwright tests. If check
 
 ```markdown
 ### Check results
+
 - **Problem:** …
 - **Fix:** …
 ```

@@ -21,6 +21,8 @@ export type TranslationKey =
   | "shop.filteredHint"
   | "shop.unknownCategory"
   | "shop.loading"
+  | "artwork.scrollPrevAria"
+  | "artwork.scrollNextAria"
   | "lang.switcherAria";
 
 type Dictionary = Record<TranslationKey, string>;
@@ -42,11 +44,13 @@ const en: Dictionary = {
   "shop.category.imADramaQueen": "Im a drama queen",
   "shop.category.darknessMyOldFriend": "Darkness my old friend",
   "shop.category.shopForMyLife": "Shop for my life",
-  "shop.allHint": "All styles — products coming soon",
-  "shop.filteredHint": "Filtered by this category — products coming soon",
+  "shop.allHint": "All styles",
+  "shop.filteredHint": "Filtered by this category",
   "shop.unknownCategory":
     "That category was not found — showing all styles instead",
   "shop.loading": "Loading shop…",
+  "artwork.scrollPrevAria": "Scroll products left",
+  "artwork.scrollNextAria": "Scroll products right",
   "lang.switcherAria": "Change language",
 };
 
@@ -67,10 +71,12 @@ const he: Dictionary = {
   "shop.category.imADramaQueen": "אני דרמה קווין",
   "shop.category.darknessMyOldFriend": "החושך חברי הוותיק",
   "shop.category.shopForMyLife": "קניות לחיים שלי",
-  "shop.allHint": "כל הסגנונות — מוצרים בקרוב",
-  "shop.filteredHint": "מסונן לפי קטגוריה זו — מוצרים בקרוב",
+  "shop.allHint": "כל הסגנונות",
+  "shop.filteredHint": "מסונן לפי קטגוריה זו",
   "shop.unknownCategory": "הקטגוריה לא נמצאה — מוצגים כל הסגנונות",
   "shop.loading": "טוען את החנות…",
+  "artwork.scrollPrevAria": "גלול מוצרים שמאלה",
+  "artwork.scrollNextAria": "גלול מוצרים ימינה",
   "lang.switcherAria": "החלפת שפה",
 };
 
@@ -91,10 +97,12 @@ const ar: Dictionary = {
   "shop.category.imADramaQueen": "أنا دراما كوين",
   "shop.category.darknessMyOldFriend": "الظلام صديقي القديم",
   "shop.category.shopForMyLife": "تسوق لحياتي",
-  "shop.allHint": "كل الأنماط — المنتجات قريبًا",
-  "shop.filteredHint": "مفلتر حسب هذه الفئة — المنتجات قريبًا",
+  "shop.allHint": "كل الأنماط",
+  "shop.filteredHint": "مفلتر حسب هذه الفئة",
   "shop.unknownCategory": "لم يتم العثور على الفئة — عرض كل الأنماط",
   "shop.loading": "جاري تحميل المتجر…",
+  "artwork.scrollPrevAria": "تمرير المنتجات إلى اليسار",
+  "artwork.scrollNextAria": "تمرير المنتجات إلى اليمين",
   "lang.switcherAria": "تغيير اللغة",
 };
 
@@ -115,10 +123,12 @@ const ru: Dictionary = {
   "shop.category.imADramaQueen": "Я королева драмы",
   "shop.category.darknessMyOldFriend": "Тьма, старый друг",
   "shop.category.shopForMyLife": "Шопинг для жизни",
-  "shop.allHint": "Все стили — товары скоро",
-  "shop.filteredHint": "Фильтр по этой категории — товары скоро",
+  "shop.allHint": "Все стили",
+  "shop.filteredHint": "Фильтр по этой категории",
   "shop.unknownCategory": "Категория не найдена — показаны все стили",
   "shop.loading": "Загрузка магазина…",
+  "artwork.scrollPrevAria": "Прокрутить товары влево",
+  "artwork.scrollNextAria": "Прокрутить товары вправо",
   "lang.switcherAria": "Сменить язык",
 };
 
