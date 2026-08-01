@@ -80,13 +80,14 @@ Automatic (no extra confirmation) when the package is already present / lockfile
 npm exec --no -- playwright install
 ```
 
-On Linux CI or when system deps are clearly missing, **ask for confirmation** before:
+On **Linux** CI or when Linux system deps are clearly missing, **ask for confirmation** before:
 
 ```bash
 npm exec --no -- playwright install --with-deps
 ```
 
-Do not use `--with-deps` on Windows unless Playwright’s own error message requires it.
+- **macOS:** always use browser-only install (`playwright install`); never `--with-deps`.
+- **Windows:** do not use `--with-deps` unless Playwright’s own error message requires host dependency setup.
 
 ### 3. Verify
 
