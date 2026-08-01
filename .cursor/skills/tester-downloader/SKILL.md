@@ -22,8 +22,8 @@ Apply if any of these are true:
 
 ## Approval rules
 
-- **Ask for confirmation first** before `npm install` / `pnpm add` / `yarn add` (or a full `npm install` that changes `node_modules` from a missing package), and before `npx playwright install --with-deps` (OS-level deps).
-- **Do not ask** before `npx playwright install` (browsers only, lockfile-pinned Playwright version already in the project).
+- **Ask for confirmation first** before **every** command that changes dependencies or `node_modules` (`npm install`, `npm ci`, `pnpm add`, `pnpm install`, `yarn add`, `yarn install`, and equivalents), and before `playwright install --with-deps` (OS-level deps).
+- **Do not ask** before browser-only install via the local Playwright binary (lockfile-pinned version already in the project).
 - If the user already asked to install Playwright/testers/browsers, treat that as approval for the needed steps.
 
 ## Detect what is missing
@@ -44,9 +44,15 @@ If both are missing, install package first (after approval), then browsers.
 
 Run from the project root. Prefer the package manager already used by the repo (`package-lock.json` → npm, `pnpm-lock.yaml` → pnpm, `yarn.lock` → yarn). Default to npm.
 
+Always run Playwright through the **local** package (no `npx` fallback that can download another version):
+
+- npm: `npm exec --no -- playwright …`
+- pnpm: `pnpm exec playwright …`
+- yarn: `yarn playwright …`
+
 ### 1. Package (if needed)
 
-**Require user confirmation** before running package installs.
+**Require user confirmation** before running any dependency / `node_modules` restore or install command.
 
 Use the **repository-pinned** version from `package.json` / the lockfile. Do **not** install unpinned `@playwright/test` (latest).
 
@@ -56,7 +62,7 @@ If `package.json` lists a version (e.g. `"@playwright/test": "^1.62.0"`), instal
 npm install -D @playwright/test@^1.62.0
 ```
 
-(Substitute the exact version/range from this repo’s `package.json`. Prefer restoring via the lockfile with `npm ci` or `npm install` when the dependency is already declared.)
+(Substitute the exact version/range from this repo’s `package.json`. Prefer restoring via the lockfile with `npm ci` or `npm install` when the dependency is already declared — still require confirmation.)
 
 If `package.json` already lists `@playwright/test` but `node_modules` is incomplete:
 
@@ -71,27 +77,28 @@ Use the equivalent for pnpm/yarn when that is the project manager.
 Automatic (no extra confirmation) when the package is already present / lockfile-pinned:
 
 ```bash
-npx playwright install
+npm exec --no -- playwright install
 ```
 
 On Linux CI or when system deps are clearly missing, **ask for confirmation** before:
 
 ```bash
-npx playwright install --with-deps
+npm exec --no -- playwright install --with-deps
 ```
 
 Do not use `--with-deps` on Windows unless Playwright’s own error message requires it.
 
 ### 3. Verify
 
-Re-run the command that failed (usually `npx playwright test`, `npm test`, or `npm run check`). Confirm it gets past install/missing-binary errors.
+Re-run the command that failed (usually `npm test`, `npm run check`, or `npm exec --no -- playwright test`). Confirm it gets past install/missing-binary errors.
 
 ## Rules
 
-- Install only what is missing; if the package is present, skip straight to `playwright install`.
+- Install only what is missing; if the package is present, skip straight to local `playwright install`.
 - Prefer the lockfile-pinned Playwright version; do not upgrade to a new major unless the user asks or the current version cannot install browsers.
+- Do not use bare `npx playwright …` (it may fetch a different package if the local binary is missing). Prefer `npm exec --no -- playwright …` / `pnpm exec` / `yarn`.
 - Do not commit `node_modules` or browser cache directories.
-- If install fails, show the error, try one clear fix (e.g. approved `npm install` then `npx playwright install` again), then report what still blocks.
+- If install fails, show the error, try one clear fix (e.g. approved `npm install` then local `playwright install` again), then report what still blocks.
 - After a successful install during a code-change session, continue the original task (including project check rules if they apply).
 
 ## Brief user update
