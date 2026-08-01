@@ -182,7 +182,18 @@ test.describe("nav menu", () => {
     const dialog = page.getByRole("dialog", { name: "Menu" });
     const box = await dialog.boundingBox();
     expect(box).toBeTruthy();
-    await page.mouse.click(box!.x + box!.width + 48, box!.y + box!.height / 2);
+    // Click the backdrop gutter to the right of the drawer; clamp so narrow
+    // viewports (drawer is min(22rem, 88vw)) still land inside the viewport.
+    const viewport = page.viewportSize();
+    expect(viewport).toBeTruthy();
+    const gutterStart = box!.x + box!.width;
+    const gutterEnd = viewport!.width;
+    expect(gutterEnd).toBeGreaterThan(gutterStart);
+    const clickX = Math.min(
+      gutterStart + 48,
+      gutterStart + (gutterEnd - gutterStart) / 2,
+    );
+    await page.mouse.click(clickX, box!.y + box!.height / 2);
     await expect(
       page.getByRole("navigation", { name: "Primary" }),
     ).toBeHidden();
