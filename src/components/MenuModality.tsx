@@ -19,7 +19,10 @@ const MenuModalityContext = createContext<MenuModalityContextValue | null>(
 );
 
 /**
- * Lets the nav report drawer open state so page chrome can become inert.
+ * Provides access to the menu drawer state and setter.
+ *
+ * @returns The current menu state and a function for updating it.
+ * @throws An error if called outside `MenuModalityProvider`.
  */
 export function useMenuModality() {
   const ctx = useContext(MenuModalityContext);
@@ -30,7 +33,7 @@ export function useMenuModality() {
 }
 
 /**
- * Provides menu-open state for inert page chrome while the drawer is open.
+ * Provides menu drawer state and controls to descendant components.
  */
 export function MenuModalityProvider({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpenState] = useState(false);

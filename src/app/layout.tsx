@@ -47,6 +47,12 @@ export const metadata: Metadata = {
   description: "Private nail studio — artwork, accessories, and contact",
 };
 
+/**
+ * Defines the root document layout with locale-aware language, direction, fonts, and application providers.
+ *
+ * @param children - The page content rendered within the application shell
+ * @returns The localized root HTML structure
+ */
 export default async function RootLayout({
   children,
 }: Readonly<{
