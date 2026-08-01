@@ -4,7 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -58,7 +58,8 @@ export function LocaleProvider({
 }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
-  useEffect(() => {
+  // Sync before paint so a cookie/localStorage mismatch does not flash.
+  useLayoutEffect(() => {
     // Same order as localeBootScript: localStorage → cookie/SSR fallback
     const next = resolveClientLocale(initialLocale);
     setLocaleState(next);

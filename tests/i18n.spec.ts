@@ -1,7 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { LOCALE_COOKIE_KEY, LOCALE_STORAGE_KEY } from "../src/i18n/locales";
 
-const BASE = "http://127.0.0.1:3000";
+const BASE = `http://127.0.0.1:${process.env.PORT ?? "3000"}`;
 
 /** Next.js dev tools sit bottom-left and intercept pointer events over the switcher. */
 async function disableNextDevOverlay(page: Page) {
@@ -96,12 +96,64 @@ test.describe("i18n", () => {
 
     await trigger.press("Enter");
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
-    await expect(page.getByRole("menuitem", { name: "עברית" })).toBeVisible();
+    const firstItem = page.getByRole("menuitem", { name: "עברית" });
+    await expect(firstItem).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.activeElement?.getAttribute("aria-label")),
+      )
+      .toBe("עברית");
 
     await page.keyboard.press("Escape");
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
     await expect(page.getByRole("menuitem", { name: "עברית" })).toHaveCount(0);
     await expect(trigger).toBeFocused();
+  });
+
+  test("moves focus across language options with arrow keys", async ({
+    page,
+  }) => {
+    await gotoApp(page);
+
+    const trigger = await languageTrigger(page);
+    await trigger.focus();
+    await trigger.press("Enter");
+
+    await expect(page.getByRole("menuitem", { name: "עברית" })).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.activeElement?.getAttribute("aria-label")),
+      )
+      .toBe("עברית");
+    await page.keyboard.press("ArrowRight");
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.activeElement?.getAttribute("aria-label")),
+      )
+      .toBe("العربية");
+    await page.keyboard.press("ArrowRight");
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.activeElement?.getAttribute("aria-label")),
+      )
+      .toBe("Русский");
+    await page.keyboard.press("Home");
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.activeElement?.getAttribute("aria-label")),
+      )
+      .toBe("עברית");
+    await page.keyboard.press("End");
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.activeElement?.getAttribute("aria-label")),
+      )
+      .toBe("Русский");
+    await page.keyboard.press("Enter");
+
+    await expect(page.locator("html")).toHaveAttribute("lang", "ru");
+    // Aria label is translated (ru: "Сменить язык"), so match on the native name.
+    await expect(page.getByRole("button", { name: /Русский/i })).toBeFocused();
   });
 
   test("prefers localStorage over a conflicting cookie", async ({ page }) => {

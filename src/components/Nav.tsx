@@ -38,13 +38,22 @@ function easeOutCubic(t: number) {
 }
 
 /**
+ * Updates the URL hash without adding a history entry.
+ */
+function replaceHash(hash: string) {
+  const url = `${window.location.pathname}${window.location.search}${hash}`;
+  window.history.replaceState(null, "", url);
+}
+
+/**
  * Smoothly scrolls to the section identified by a URL hash.
  *
  * @param hash - The hash identifying the target section.
- * @param updateHistory - Whether to add the hash to browser history.
+ * @param updateHistory - Whether to sync the hash into the URL (replaceState).
  */
 function scrollToSection(hash: string, updateHistory = true) {
-  const id = hash.replace("#", "");
+  const normalized = hash.startsWith("#") ? hash : `#${hash}`;
+  const id = normalized.slice(1);
   const el = document.getElementById(id);
   if (!el) return;
 
@@ -55,10 +64,11 @@ function scrollToSection(hash: string, updateHistory = true) {
   const startY = window.scrollY;
   const distance = targetY - startY;
 
-  if (Math.abs(distance) < 1) {
-    if (updateHistory) window.history.pushState(null, "", hash);
-    return;
+  if (updateHistory) {
+    replaceHash(normalized);
   }
+
+  if (Math.abs(distance) < 1) return;
 
   // ~3/4 of previous speed ⇒ duration × 4/3
   const duration = Math.min(1467, Math.max(600, Math.abs(distance) * 0.733));
@@ -70,7 +80,12 @@ function scrollToSection(hash: string, updateHistory = true) {
     if (startTime === null) startTime = timestamp;
 
     const progress = Math.min((timestamp - startTime) / duration, 1);
-    window.scrollTo(0, startY + distance * easeOutCubic(progress));
+    // Explicit "auto" so CSS scroll-behavior cannot re-smooth each frame.
+    window.scrollTo({
+      top: startY + distance * easeOutCubic(progress),
+      left: 0,
+      behavior: "auto",
+    });
 
     if (progress < 1) {
       window.requestAnimationFrame(step);
@@ -78,16 +93,12 @@ function scrollToSection(hash: string, updateHistory = true) {
   };
 
   window.requestAnimationFrame(step);
-
-  if (updateHistory) {
-    window.history.pushState(null, "", hash);
-  }
 }
 
 /**
  * Renders a fixed navigation header with smooth scrolling links to page sections.
  *
- * Synchronizes scrolling with the current URL hash and responds to hash changes.
+ * Synchronizes scrolling with the current URL hash and responds to hash / history changes.
  */
 export function Nav() {
   const { t } = useLocale();
@@ -102,9 +113,12 @@ export function Nav() {
     const frame = window.requestAnimationFrame(scrollFromLocation);
 
     window.addEventListener("hashchange", scrollFromLocation);
+    window.addEventListener("popstate", scrollFromLocation);
     return () => {
       window.cancelAnimationFrame(frame);
+      scrollAnimationId += 1;
       window.removeEventListener("hashchange", scrollFromLocation);
+      window.removeEventListener("popstate", scrollFromLocation);
     };
   }, []);
 

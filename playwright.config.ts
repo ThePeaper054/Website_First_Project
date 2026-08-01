@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const port = process.env.PORT ?? "3000";
+const baseURL = `http://127.0.0.1:${port}`;
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -11,7 +14,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL,
     trace: "on-first-retry",
   },
   projects: [
@@ -21,8 +24,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
-    url: "http://127.0.0.1:3000",
+    command: `npx next dev -p ${port}`,
+    url: baseURL,
     reuseExistingServer: !process.env.CI,
   },
 });

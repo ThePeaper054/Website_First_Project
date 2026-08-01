@@ -26,7 +26,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Section scrolling is owned by Nav (rAF + behavior: "auto"). */
   scroll-padding-top: var(--nav-height);
 }
 
