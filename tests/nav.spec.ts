@@ -204,6 +204,22 @@ test.describe("nav menu", () => {
     ).toBeVisible();
   });
 
+  test("shop page lists all products", async ({ page }) => {
+    await gotoApp(page, "/shop");
+
+    await expect(
+      page.getByRole("heading", { name: "Shop", level: 1 }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Artwork 01", level: 2 }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Artwork 10", level: 2 }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2 })).toHaveCount(10);
+    await expect(page.getByText("₪89").first()).toBeVisible();
+  });
+
   test("What's best category navigates to filtered shop", async ({ page }) => {
     await gotoApp(page);
     await openMenu(page);

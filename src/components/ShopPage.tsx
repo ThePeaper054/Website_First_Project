@@ -105,7 +105,11 @@ export function ShopPage() {
         <ul className="grid list-none grid-cols-2 gap-4 sm:grid-cols-3">
           {PRODUCTS.map((product) => (
             <li key={product.id} className="group">
-              <ProductCard product={product} />
+              <ProductCard
+                product={product}
+                headingLevel={2}
+                sizes="(max-width: 640px) 50vw, 33vw"
+              />
             </li>
           ))}
         </ul>
