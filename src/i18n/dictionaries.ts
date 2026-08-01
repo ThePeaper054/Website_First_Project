@@ -21,6 +21,8 @@ export type TranslationKey =
   | "shop.filteredHint"
   | "shop.unknownCategory"
   | "shop.loading"
+  | "artwork.scrollPrevAria"
+  | "artwork.scrollNextAria"
   | "lang.switcherAria";
 
 type Dictionary = Record<TranslationKey, string>;
@@ -47,6 +49,8 @@ const en: Dictionary = {
   "shop.unknownCategory":
     "That category was not found — showing all styles instead",
   "shop.loading": "Loading shop…",
+  "artwork.scrollPrevAria": "Scroll products left",
+  "artwork.scrollNextAria": "Scroll products right",
   "lang.switcherAria": "Change language",
 };
 
@@ -71,6 +75,8 @@ const he: Dictionary = {
   "shop.filteredHint": "מסונן לפי קטגוריה זו — מוצרים בקרוב",
   "shop.unknownCategory": "הקטגוריה לא נמצאה — מוצגים כל הסגנונות",
   "shop.loading": "טוען את החנות…",
+  "artwork.scrollPrevAria": "גלול מוצרים שמאלה",
+  "artwork.scrollNextAria": "גלול מוצרים ימינה",
   "lang.switcherAria": "החלפת שפה",
 };
 
@@ -95,6 +101,8 @@ const ar: Dictionary = {
   "shop.filteredHint": "مفلتر حسب هذه الفئة — المنتجات قريبًا",
   "shop.unknownCategory": "لم يتم العثور على الفئة — عرض كل الأنماط",
   "shop.loading": "جاري تحميل المتجر…",
+  "artwork.scrollPrevAria": "تمرير المنتجات إلى اليسار",
+  "artwork.scrollNextAria": "تمرير المنتجات إلى اليمين",
   "lang.switcherAria": "تغيير اللغة",
 };
 
@@ -119,6 +127,8 @@ const ru: Dictionary = {
   "shop.filteredHint": "Фильтр по этой категории — товары скоро",
   "shop.unknownCategory": "Категория не найдена — показаны все стили",
   "shop.loading": "Загрузка магазина…",
+  "artwork.scrollPrevAria": "Прокрутить товары влево",
+  "artwork.scrollNextAria": "Прокрутить товары вправо",
   "lang.switcherAria": "Сменить язык",
 };
 
