@@ -13,6 +13,11 @@ async function gotoApp(page: Page, path = "/") {
   await disableNextDevOverlay(page);
 }
 
+async function openMenu(page: Page) {
+  await page.getByRole("button", { name: "Open menu" }).click();
+  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+}
+
 async function sectionAligned(page: Page, id: string) {
   return page.evaluate((sectionId) => {
     const el = document.getElementById(sectionId);
@@ -23,23 +28,15 @@ async function sectionAligned(page: Page, id: string) {
   }, id);
 }
 
-test.describe("nav scroll", () => {
-  test("nav link scrolls to section and replaces the hash", async ({
+test.describe("nav menu", () => {
+  test("hamburger opens menu and Contact scrolls to section", async ({
     page,
   }) => {
     await gotoApp(page);
 
     const historyLengthBefore = await page.evaluate(() => history.length);
 
-    await page
-      .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "Gallery" })
-      .click();
-
-    await expect(page).toHaveURL(/#gallery$/);
-    await expect
-      .poll(async () => sectionAligned(page, "gallery"), { timeout: 3000 })
-      .toBe(true);
+    await openMenu(page);
 
     await page
       .getByRole("navigation", { name: "Primary" })
@@ -55,49 +52,322 @@ test.describe("nav scroll", () => {
     expect(await page.evaluate(() => history.length)).toBe(historyLengthBefore);
   });
 
-  test("loads with a hash and scrolls to that section", async ({ page }) => {
+  test("Accessories menu link scrolls to section", async ({ page }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("link", { name: "Accessories" })
+      .click();
+
+    await expect(page).toHaveURL(/#accessories$/);
+    await expect
+      .poll(async () => sectionAligned(page, "accessories"), { timeout: 3000 })
+      .toBe(true);
+  });
+
+  test("Artwork menu link scrolls to section", async ({ page }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("link", { name: "Artwork" })
+      .click();
+
+    await expect(page).toHaveURL(/#artwork$/);
+    await expect
+      .poll(async () => sectionAligned(page, "artwork"), { timeout: 3000 })
+      .toBe(true);
+  });
+
+  test("What's best toggle keeps keyboard focus on the control", async ({
+    page,
+  }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    const whatsBest = page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("button", { name: "What's best for me" });
+
+    await whatsBest.focus();
+    await page.keyboard.press("Enter");
+
+    await expect(whatsBest).toHaveAttribute("aria-expanded", "true");
+    await expect(whatsBest).toBeFocused();
+    await expect(
+      page.getByRole("navigation", { name: "Primary" }).getByRole("link", {
+        name: "Simple for me",
+      }),
+    ).toBeVisible();
+  });
+
+  test("tab cycles within the open menu", async ({ page }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    const nav = page.getByRole("navigation", { name: "Primary" });
+    const home = nav.getByRole("link", { name: "Home" });
+    const contact = nav.getByRole("link", { name: "Contact" });
+
+    await expect(home).toBeFocused();
+
+    // Home → Artwork → Shop all → What's best → Accessories → Contact
+    for (let i = 0; i < 5; i += 1) {
+      await page.keyboard.press("Tab");
+    }
+    await expect(contact).toBeFocused();
+
+    await page.keyboard.press("Tab");
+    await expect(home).toBeFocused();
+
+    await page.keyboard.press("Shift+Tab");
+    await expect(contact).toBeFocused();
+  });
+
+  test("page content and language switcher are inert while menu is open", async ({
+    page,
+  }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    const mainInert = await page.locator("main").evaluate((el) => {
+      let node: HTMLElement | null = el;
+      while (node) {
+        if (node.hasAttribute("inert")) return true;
+        node = node.parentElement;
+      }
+      return false;
+    });
+    expect(mainInert).toBe(true);
+
+    // Language switcher is inert, so avoid role queries that skip inert subtrees.
+    const switcherInert = await page
+      .locator(".fixed.bottom-4.left-4")
+      .evaluate((el) => {
+        let node: HTMLElement | null = el;
+        while (node) {
+          if (node.hasAttribute("inert")) return true;
+          node = node.parentElement;
+        }
+        return false;
+      });
+    expect(switcherInert).toBe(true);
+  });
+
+  test("logo is not interactive while the menu is open", async ({ page }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    const logoLink = page
+      .locator("header a")
+      .filter({ has: page.locator("img") });
+    await expect(logoLink).toHaveAttribute("aria-hidden", "true");
+    await expect(logoLink).toHaveCSS("pointer-events", "none");
+  });
+
+  test("Escape and backdrop close the menu", async ({ page }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    await page.keyboard.press("Escape");
+    await expect(
+      page.getByRole("navigation", { name: "Primary" }),
+    ).toBeHidden();
+    await expect(page.getByRole("button", { name: "Open menu" })).toBeFocused();
+
+    await openMenu(page);
+    const dialog = page.getByRole("dialog", { name: "Menu" });
+    const box = await dialog.boundingBox();
+    expect(box).toBeTruthy();
+    await page.mouse.click(box!.x + box!.width + 48, box!.y + box!.height / 2);
+    await expect(
+      page.getByRole("navigation", { name: "Primary" }),
+    ).toBeHidden();
+  });
+
+  test("Shop all navigates to /shop", async ({ page }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("link", { name: "Shop all" })
+      .click();
+
+    await expect(page).toHaveURL(/\/shop$/);
+    const shopHeading = page.getByRole("heading", { name: "Shop" });
+    await expect(shopHeading).toBeVisible();
+    await expect(shopHeading).toBeFocused();
+    await expect(
+      page.getByRole("button", { name: /Change language/i }),
+    ).toBeVisible();
+  });
+
+  test("What's best category navigates to filtered shop", async ({ page }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("button", { name: "What's best for me" })
+      .click();
+
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("link", { name: "Simple for me" })
+      .click();
+
+    await expect(page).toHaveURL(/\/shop\?category=simple-for-me$/);
+    await expect(
+      page.getByRole("heading", { name: "Simple for me" }),
+    ).toBeVisible();
+  });
+
+  test("invalid shop category shows notice and cleans the URL", async ({
+    page,
+  }) => {
+    await gotoApp(page, "/shop?category=not-a-real-tag");
+
+    await expect(
+      page.getByText(
+        "That category was not found — showing all styles instead",
+      ),
+    ).toBeVisible();
+    await expect(page).toHaveURL(/\/shop$/);
+    await expect(page.getByRole("heading", { name: "Shop" })).toBeVisible();
+  });
+
+  test("valid category clears the unknown-category notice", async ({
+    page,
+  }) => {
+    await gotoApp(page, "/shop?category=not-a-real-tag");
+    await expect(
+      page.getByText(
+        "That category was not found — showing all styles instead",
+      ),
+    ).toBeVisible();
+
+    await openMenu(page);
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("button", { name: "What's best for me" })
+      .click();
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("link", { name: "Simple for me" })
+      .click();
+
+    await expect(page).toHaveURL(/\/shop\?category=simple-for-me$/);
+    await expect(
+      page.getByRole("heading", { name: "Simple for me" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "That category was not found — showing all styles instead",
+      ),
+    ).toHaveCount(0);
+  });
+
+  test("legacy #about hash scrolls to accessories", async ({ page }) => {
     await gotoApp(page, "/#about");
 
-    await expect(page).toHaveURL(/#about$/);
+    await expect(page).toHaveURL(/#accessories$/);
     await expect
-      .poll(async () => sectionAligned(page, "about"), { timeout: 3000 })
+      .poll(async () => sectionAligned(page, "accessories"), { timeout: 3000 })
+      .toBe(true);
+  });
+
+  test("legacy #gallery hash scrolls to artwork", async ({ page }) => {
+    await gotoApp(page, "/#gallery");
+
+    await expect(page).toHaveURL(/#artwork$/);
+    await expect
+      .poll(async () => sectionAligned(page, "artwork"), { timeout: 3000 })
+      .toBe(true);
+  });
+
+  test("language switcher is covered while the menu is open", async ({
+    page,
+  }) => {
+    await gotoApp(page);
+    await openMenu(page);
+
+    // Inert removes the switcher from the a11y tree; hit-test the fixed root instead.
+    const switcher = page.locator(".fixed.bottom-4.left-4");
+    await expect(switcher).toBeVisible();
+
+    const blocked = await switcher.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      const top = document.elementFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2,
+      );
+      return top !== el && !el.contains(top);
+    });
+    expect(blocked).toBe(true);
+  });
+
+  test("Contact from shop navigates home and scrolls", async ({ page }) => {
+    await gotoApp(page, "/shop");
+    await openMenu(page);
+
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("link", { name: "Contact" })
+      .click();
+
+    await expect(page).toHaveURL(/\/?#contact$/);
+    await expect
+      .poll(async () => sectionAligned(page, "contact"), { timeout: 5000 })
+      .toBe(true);
+  });
+
+  test("loads with a hash and scrolls to that section", async ({ page }) => {
+    await gotoApp(page, "/#accessories");
+
+    await expect(page).toHaveURL(/#accessories$/);
+    await expect
+      .poll(async () => sectionAligned(page, "accessories"), { timeout: 3000 })
       .toBe(true);
   });
 
   test("hashchange re-scrolls to the current hash", async ({ page }) => {
     await gotoApp(page);
 
+    await openMenu(page);
     await page
       .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "Gallery" })
+      .getByRole("link", { name: "Contact" })
       .click();
-    await expect(page).toHaveURL(/#gallery$/);
+    await expect(page).toHaveURL(/#contact$/);
     await expect
-      .poll(async () => sectionAligned(page, "gallery"), { timeout: 3000 })
+      .poll(async () => sectionAligned(page, "contact"), { timeout: 3000 })
       .toBe(true);
 
-    // App Router may strip hashes set only via history APIs; use the URL the
-    // nav already established, then prove the hashchange listener re-scrolls.
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.evaluate(() => {
       window.dispatchEvent(new HashChangeEvent("hashchange"));
     });
 
     await expect
-      .poll(async () => sectionAligned(page, "gallery"), { timeout: 3000 })
+      .poll(async () => sectionAligned(page, "contact"), { timeout: 3000 })
       .toBe(true);
   });
 
   test("popstate re-scrolls to the current hash", async ({ page }) => {
     await gotoApp(page);
 
+    await openMenu(page);
     await page
       .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "About" })
+      .getByRole("link", { name: "Contact" })
       .click();
-    await expect(page).toHaveURL(/#about$/);
+    await expect(page).toHaveURL(/#contact$/);
     await expect
-      .poll(async () => sectionAligned(page, "about"), { timeout: 3000 })
+      .poll(async () => sectionAligned(page, "contact"), { timeout: 3000 })
       .toBe(true);
 
     await page.evaluate(() => window.scrollTo(0, 0));
@@ -106,7 +376,7 @@ test.describe("nav scroll", () => {
     });
 
     await expect
-      .poll(async () => sectionAligned(page, "about"), { timeout: 3000 })
+      .poll(async () => sectionAligned(page, "contact"), { timeout: 3000 })
       .toBe(true);
   });
 });

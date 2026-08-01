@@ -7,6 +7,7 @@ import {
 } from "next/font/google";
 import { cookies } from "next/headers";
 import Script from "next/script";
+import { AppShell } from "@/components/AppShell";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import {
   DEFAULT_LOCALE,
@@ -43,7 +44,7 @@ const cyrillic = Noto_Sans({
 
 export const metadata: Metadata = {
   title: "Nara Nails",
-  description: "Private nail studio — gallery, about, and contact",
+  description: "Private nail studio — artwork, accessories, and contact",
 };
 
 export default async function RootLayout({
@@ -65,7 +66,9 @@ export default async function RootLayout({
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: localeBootScript }}
         />
-        <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+        <LocaleProvider initialLocale={locale}>
+          <AppShell>{children}</AppShell>
+        </LocaleProvider>
       </body>
     </html>
   );
