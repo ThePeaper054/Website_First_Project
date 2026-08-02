@@ -52,7 +52,7 @@ test.describe("nav menu", () => {
     expect(await page.evaluate(() => history.length)).toBe(historyLengthBefore);
   });
 
-  test("Accessories menu link scrolls to section", async ({ page }) => {
+  test("Accessories menu link navigates to /accessories", async ({ page }) => {
     await gotoApp(page);
     await openMenu(page);
 
@@ -61,10 +61,13 @@ test.describe("nav menu", () => {
       .getByRole("link", { name: "Accessories" })
       .click();
 
-    await expect(page).toHaveURL(/#accessories$/);
-    await expect
-      .poll(async () => sectionAligned(page, "accessories"), { timeout: 3000 })
-      .toBe(true);
+    await expect(page).toHaveURL(/\/accessories$/);
+    const accessoriesHeading = page.getByRole("heading", {
+      name: "Accessories",
+      level: 1,
+    });
+    await expect(accessoriesHeading).toBeVisible();
+    await expect(accessoriesHeading).toBeFocused();
   });
 
   test("Artwork menu link scrolls to section", async ({ page }) => {
@@ -204,7 +207,7 @@ test.describe("nav menu", () => {
     ).toBeVisible();
   });
 
-  test("shop page lists all products", async ({ page }) => {
+  test("shop page lists all artwork products only", async ({ page }) => {
     await gotoApp(page, "/shop");
 
     await expect(
@@ -218,6 +221,27 @@ test.describe("nav menu", () => {
     ).toBeVisible();
     await expect(page.getByRole("heading", { level: 2 })).toHaveCount(10);
     await expect(page.getByText("₪89").first()).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Accessory 01", level: 2 }),
+    ).toHaveCount(0);
+  });
+
+  test("accessories page lists four accessory products", async ({ page }) => {
+    await gotoApp(page, "/accessories");
+
+    await expect(
+      page.getByRole("heading", { name: "Accessories", level: 1 }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Accessory 01", level: 2 }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Accessory 04", level: 2 }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2 })).toHaveCount(4);
+    await expect(
+      page.getByRole("heading", { name: "Artwork 01", level: 2 }),
+    ).toHaveCount(0);
   });
 
   test("What's best category navigates to filtered shop", async ({ page }) => {

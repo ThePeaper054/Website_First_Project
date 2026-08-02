@@ -446,9 +446,9 @@ export function Nav() {
               </li>
               <li>
                 <Link
-                  href="/#accessories"
+                  href="/accessories"
                   className={linkClass}
-                  onClick={(event) => onHashClick(event, "#accessories")}
+                  onClick={closeMenu}
                 >
                   {t("nav.accessories")}
                 </Link>
