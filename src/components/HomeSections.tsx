@@ -1,19 +1,11 @@
 "use client";
 
+import { AccessoriesSection } from "@/components/AccessoriesSection";
 import { ArtworkSection } from "@/components/ArtworkSection";
 import { useLocale } from "@/i18n/LocaleProvider";
-import type { TranslationKey } from "@/i18n/dictionaries";
-
-const placeholderSections = [
-  { id: "accessories", labelKey: "nav.accessories" },
-  { id: "contact", labelKey: "nav.contact" },
-] as const satisfies ReadonlyArray<{
-  id: string;
-  labelKey: TranslationKey;
-}>;
 
 /**
- * Home page sections: artwork product scroller plus remaining placeholders.
+ * Home page sections: artwork and accessories product areas plus contact placeholder.
  */
 export function HomeSections() {
   const { t } = useLocale();
@@ -31,17 +23,16 @@ export function HomeSections() {
 
       <ArtworkSection />
 
-      {placeholderSections.map((section) => (
-        <section
-          key={section.id}
-          id={section.id}
-          className="flex min-h-screen items-center justify-center px-6 pt-[var(--nav-height)]"
-        >
-          <p className="font-[family-name:var(--font-display),var(--font-arabic),var(--font-cyrillic)] text-3xl font-medium tracking-wide text-charcoal/45 sm:text-4xl">
-            {t(section.labelKey)}
-          </p>
-        </section>
-      ))}
+      <AccessoriesSection />
+
+      <section
+        id="contact"
+        className="flex min-h-screen items-center justify-center px-6 pt-[var(--nav-height)]"
+      >
+        <p className="font-[family-name:var(--font-display),var(--font-arabic),var(--font-cyrillic)] text-3xl font-medium tracking-wide text-charcoal/45 sm:text-4xl">
+          {t("nav.contact")}
+        </p>
+      </section>
     </main>
   );
 }

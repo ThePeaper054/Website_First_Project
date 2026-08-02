@@ -73,6 +73,37 @@ export const PRODUCTS: readonly Product[] = [
 ] as const;
 
 /**
+ * Placeholder catalog for accessories (home section + /accessories page only).
+ * Not included in the artwork shop catalog.
+ */
+export const ACCESSORIES_PRODUCTS: readonly Product[] = [
+  {
+    id: "accessory-01",
+    name: "Accessory 01",
+    price: 49,
+    imageSrc: "/products/product-01.svg",
+  },
+  {
+    id: "accessory-02",
+    name: "Accessory 02",
+    price: 59,
+    imageSrc: "/products/product-02.svg",
+  },
+  {
+    id: "accessory-03",
+    name: "Accessory 03",
+    price: 69,
+    imageSrc: "/products/product-03.svg",
+  },
+  {
+    id: "accessory-04",
+    name: "Accessory 04",
+    price: 79,
+    imageSrc: "/products/product-04.svg",
+  },
+] as const;
+
+/**
  * Formats a product price in Israeli shekels for display.
  */
 export function formatProductPrice(price: number) {
