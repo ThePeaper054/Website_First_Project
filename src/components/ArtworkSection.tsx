@@ -6,7 +6,7 @@ import { useLocale } from "@/i18n/LocaleProvider";
 import { PRODUCTS } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 
-const VISIBLE_COUNT = 3;
+const VISIBLE_COUNT = 4;
 const TILE_GAP_PX = 16;
 
 let slideAnimationId = 0;
@@ -51,7 +51,7 @@ export function ArtworkSection() {
   }, []);
 
   /**
-   * Glides the product rail by three tiles, using the same ease as menu section scroll.
+   * Glides the product rail by four tiles, using the same ease as menu section scroll.
    */
   function glide(direction: "prev" | "next") {
     const scroller = scrollerRef.current;
@@ -122,9 +122,9 @@ export function ArtworkSection() {
               <div
                 key={product.id}
                 data-product-tile
-                className="group w-[calc((100%-2rem)/3)] min-w-[calc((100%-2rem)/3)] shrink-0"
+                className="group w-[calc((100%-3rem)/4)] min-w-[calc((100%-3rem)/4)] shrink-0"
               >
-                <ProductCard product={product} sizes="33vw" />
+                <ProductCard product={product} sizes="25vw" />
               </div>
             ))}
           </div>
