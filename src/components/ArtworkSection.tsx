@@ -29,7 +29,7 @@ function easeOutCubic(t: number) {
 }
 
 /**
- * Home artwork section: title + Shop all link, and a gliding product rail.
+ * Renders the home artwork section with a localized heading, shop link, and responsive product rail.
  */
 export function ArtworkSection() {
   const { t } = useLocale();
@@ -61,7 +61,9 @@ export function ArtworkSection() {
   }, []);
 
   /**
-   * Glides the product rail by one page of visible tiles, using the same ease as menu section scroll.
+   * Animates the product rail by one page of visible tiles.
+   *
+   * @param direction - The direction in which to move the rail.
    */
   function glide(direction: "prev" | "next") {
     const scroller = scrollerRef.current;
