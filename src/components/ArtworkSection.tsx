@@ -71,10 +71,12 @@ export function ArtworkSection() {
       "[data-product-tile]",
     );
     const fallbackVisibleCount = getFallbackVisibleCount();
+    const measuredWidth = firstTile?.offsetWidth ?? 0;
     const tileWidth =
-      firstTile?.offsetWidth ??
-      (scroller.clientWidth - TILE_GAP_PX * (fallbackVisibleCount - 1)) /
-        fallbackVisibleCount;
+      measuredWidth > 0
+        ? measuredWidth
+        : (scroller.clientWidth - TILE_GAP_PX * (fallbackVisibleCount - 1)) /
+          fallbackVisibleCount;
     const visibleCount = Math.max(
       1,
       Math.round(
@@ -145,7 +147,7 @@ export function ArtworkSection() {
               >
                 <ProductCard
                   product={product}
-                  sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                  sizes="(max-width: 639px) calc((100vw - 4rem) / 2), (max-width: 1023px) calc((min(100vw - 3rem, 72rem) - 2rem) / 3), calc((min(100vw - 3rem, 72rem) - 3rem) / 4)"
                 />
               </div>
             ))}
