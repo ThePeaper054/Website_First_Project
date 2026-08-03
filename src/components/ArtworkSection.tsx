@@ -6,10 +6,20 @@ import { useLocale } from "@/i18n/LocaleProvider";
 import { PRODUCTS } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 
-const VISIBLE_COUNT = 4;
 const TILE_GAP_PX = 16;
 
 let slideAnimationId = 0;
+
+/**
+ * Fallback visible tile count when a tile cannot be measured, matching the
+ * responsive rail widths (2 / sm:3 / lg:4).
+ */
+function getFallbackVisibleCount() {
+  if (typeof window === "undefined") return 2;
+  if (window.matchMedia("(min-width: 1024px)").matches) return 4;
+  if (window.matchMedia("(min-width: 640px)").matches) return 3;
+  return 2;
+}
 
 /**
  * Calculates a cubic ease-out interpolation value (same feel as nav section glide).
@@ -51,7 +61,7 @@ export function ArtworkSection() {
   }, []);
 
   /**
-   * Glides the product rail by four tiles, using the same ease as menu section scroll.
+   * Glides the product rail by one page of visible tiles, using the same ease as menu section scroll.
    */
   function glide(direction: "prev" | "next") {
     const scroller = scrollerRef.current;
@@ -60,9 +70,18 @@ export function ArtworkSection() {
     const firstTile = scroller.querySelector<HTMLElement>(
       "[data-product-tile]",
     );
+    const fallbackVisibleCount = getFallbackVisibleCount();
     const tileWidth =
-      firstTile?.offsetWidth ?? scroller.clientWidth / VISIBLE_COUNT;
-    const step = (tileWidth + TILE_GAP_PX) * VISIBLE_COUNT;
+      firstTile?.offsetWidth ??
+      (scroller.clientWidth - TILE_GAP_PX * (fallbackVisibleCount - 1)) /
+        fallbackVisibleCount;
+    const visibleCount = Math.max(
+      1,
+      Math.round(
+        (scroller.clientWidth + TILE_GAP_PX) / (tileWidth + TILE_GAP_PX),
+      ),
+    );
+    const step = (tileWidth + TILE_GAP_PX) * visibleCount;
     const startX = scroller.scrollLeft;
     const maxScroll = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
     const targetX = Math.max(
@@ -122,9 +141,12 @@ export function ArtworkSection() {
               <div
                 key={product.id}
                 data-product-tile
-                className="group w-[calc((100%_-_3rem)/4)] min-w-[calc((100%_-_3rem)/4)] shrink-0"
+                className="group w-[calc((100%_-_1rem)/2)] min-w-[calc((100%_-_1rem)/2)] shrink-0 sm:w-[calc((100%_-_2rem)/3)] sm:min-w-[calc((100%_-_2rem)/3)] lg:w-[calc((100%_-_3rem)/4)] lg:min-w-[calc((100%_-_3rem)/4)]"
               >
-                <ProductCard product={product} sizes="25vw" />
+                <ProductCard
+                  product={product}
+                  sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                />
               </div>
             ))}
           </div>
