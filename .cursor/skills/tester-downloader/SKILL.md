@@ -22,12 +22,11 @@ Apply if any of these are true:
 
 ## Approval rules
 
-Lifecycle scripts (`npm install` / `npm ci` / equivalents) and OS changes (`playwright install --with-deps`) are trust boundaries. Gate them:
+Lifecycle scripts (`npm install` / `npm ci` / equivalents) and Playwright browser downloads (`playwright install`, including `--with-deps`) are trust boundaries. Gate them:
 
-- **Ask for confirmation first** before **every** command that changes dependencies or `node_modules` (`npm install`, `npm ci`, `pnpm add`, `pnpm install`, `yarn add`, `yarn install`, and equivalents), and before `playwright install --with-deps`.
+- **Ask for confirmation first** before **every** command that changes dependencies or `node_modules` (`npm install`, `npm ci`, `pnpm add`, `pnpm install`, `yarn add`, `yarn install`, and equivalents), and before **any** `playwright install` (browser-only or `--with-deps`).
 - Do **not** treat `CI=true`, provider labels, or similar env flags as proof of disposable/isolated execution — those alone never skip confirmation.
-- Auto-run package restores or `--with-deps` **only** when the execution layer itself has already verified trusted isolation (for example this repo’s GitHub Actions workflow installing deps on `ubuntu-latest`). The agent must not infer that from env vars.
-- **Do not ask** before browser-only install via the local Playwright binary (lockfile-pinned version already in the project).
+- Auto-run package restores or any `playwright install` **only** when the execution layer itself has already verified trusted isolation (for example this repo’s GitHub Actions workflow installing deps on `ubuntu-latest`). The agent must not infer that from env vars.
 - If the user already asked to install Playwright/testers/browsers, treat that as approval for the needed steps.
 - The same gates apply to **retry** installs after a failure — do not bypass confirmation on retry.
 - Prefer the smallest install that unblocks tests (browsers only if the package is already present).
@@ -82,13 +81,13 @@ Use the equivalent for pnpm/yarn when that is the project manager.
 
 ### 2. Browsers (if needed)
 
-Automatic (no extra confirmation) when the package is already present / lockfile-pinned:
+**Require user confirmation** before any browser install, including browser-only:
 
 ```bash
 npm exec --no -- playwright install
 ```
 
-On **Linux** when system deps are clearly missing, **ask for confirmation** before:
+On **Linux** when system deps are clearly missing, **ask for confirmation** before (prefer this over browser-only on Linux when OS deps are required):
 
 ```bash
 npm exec --no -- playwright install --with-deps
@@ -103,11 +102,11 @@ Re-run the command that failed (usually `npm test`, `npm run check`, or `npm exe
 
 ## Rules
 
-- Install only what is missing; if the package is present, skip straight to local `playwright install`.
+- Install only what is missing; if the package is present, skip straight to local `playwright install` (after confirmation).
 - Prefer the lockfile-pinned Playwright version; do not upgrade to a new major unless the user asks or the current version cannot install browsers.
 - Do not use bare `npx playwright …` (it may fetch a different package if the local binary is missing). Prefer `npm exec --no -- playwright …` / `pnpm exec` / `yarn`.
 - Do not commit `node_modules` or browser cache directories.
-- If install fails, show the error, try one clear fix (e.g. approved `npm install` then local `playwright install` again — still gated), then report what still blocks.
+- If install fails, show the error, try one clear fix (e.g. approved `npm install` then approved local `playwright install` again — still gated), then report what still blocks.
 - After a successful install during a code-change session, continue the original task (including project check rules if they apply).
 
 ## Brief user update
