@@ -2,7 +2,7 @@
 
 import { ProductCard } from "@/components/ProductCard";
 import { useLocale } from "@/i18n/LocaleProvider";
-import { PRODUCTS } from "@/lib/products";
+import { getShopProducts } from "@/lib/products";
 import { isShopCategoryId, SHOP_CATEGORIES } from "@/lib/shopCategories";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -37,7 +37,7 @@ function clearUnknownCategoryFlag() {
  * Displays the shop page with an optional validated category filter.
  *
  * Invalid category parameters display a localized notice and redirect to the default shop URL.
- * All products render in a downward page-flow grid (no nested scroller).
+ * When a valid category is present, only matching artwork products are shown.
  *
  * @returns The rendered shop page.
  */
@@ -57,6 +57,7 @@ export function ShopPage() {
   const categoryMeta = category
     ? SHOP_CATEGORIES.find((item) => item.id === category)
     : null;
+  const visibleProducts = getShopProducts(category);
 
   useEffect(() => {
     if (isInvalidCategory) {
@@ -103,7 +104,7 @@ export function ShopPage() {
         </header>
 
         <ul className="grid list-none grid-cols-2 gap-4 sm:grid-cols-3">
-          {PRODUCTS.map((product) => (
+          {visibleProducts.map((product) => (
             <li key={product.id} className="group">
               <ProductCard
                 product={product}
