@@ -5,7 +5,7 @@ export type Product = {
   name: string;
   price: number;
   imageSrc: string;
-  /** Stored for future filtering; not shown in the UI yet. */
+  /** Used by the shop page to filter products by “What’s best for me” category. */
   categoryIds: readonly ShopCategoryId[];
 };
 
@@ -127,6 +127,17 @@ export const ACCESSORIES_PRODUCTS: readonly Product[] = [
     categoryIds: [],
   },
 ] as const;
+
+/**
+ * Returns artwork products for the shop, optionally filtered by category.
+ *
+ * @param category - When set, only products that include this category id.
+ * @returns Matching products, or the full artwork catalog when unfiltered.
+ */
+export function getShopProducts(category?: ShopCategoryId | null) {
+  if (!category) return PRODUCTS;
+  return PRODUCTS.filter((product) => product.categoryIds.includes(category));
+}
 
 /**
  * Formats a product price in Israeli shekels for display.

@@ -262,6 +262,16 @@ test.describe("nav menu", () => {
     await expect(
       page.getByRole("heading", { name: "Simple for me" }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Night Flower", level: 2 }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "The Garden", level: 2 }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Ruby Necklace", level: 2 }),
+    ).toHaveCount(0);
+    await expect(page.getByRole("heading", { level: 2 })).toHaveCount(6);
   });
 
   test("invalid shop category shows notice and cleans the URL", async ({
