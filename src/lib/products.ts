@@ -1,74 +1,95 @@
+import type { ShopCategoryId } from "@/lib/shopCategories";
+
 export type Product = {
   id: string;
   name: string;
   price: number;
   imageSrc: string;
+  /** Stored for future filtering; not shown in the UI yet. */
+  categoryIds: readonly ShopCategoryId[];
 };
 
 /**
- * Placeholder catalog for the home artwork scroller.
- * Image paths and names will be replaced with real product assets later.
+ * Artwork catalog for the home scroller and shop.
+ * Image paths and names are filled as real product assets arrive.
  */
 export const PRODUCTS: readonly Product[] = [
   {
     id: "artwork-01",
-    name: "Artwork 01",
-    price: 89,
-    imageSrc: "/products/product-01.svg",
+    name: "Night Flower",
+    price: 250,
+    imageSrc: "/products/artwork-01.png",
+    categoryIds: ["shop-for-my-life", "simple-for-me"],
   },
   {
     id: "artwork-02",
-    name: "Artwork 02",
-    price: 99,
-    imageSrc: "/products/product-02.svg",
+    name: "Blue River",
+    price: 270,
+    imageSrc: "/products/artwork-02.png",
+    categoryIds: ["simple-for-me", "shop-for-my-life"],
   },
   {
     id: "artwork-03",
-    name: "Artwork 03",
-    price: 109,
-    imageSrc: "/products/product-03.svg",
+    name: "The Ocean",
+    price: 270,
+    imageSrc: "/products/artwork-03.png",
+    categoryIds: ["simple-for-me", "shop-for-my-life"],
   },
   {
     id: "artwork-04",
-    name: "Artwork 04",
-    price: 119,
-    imageSrc: "/products/product-04.svg",
+    name: "Cosmic Space",
+    price: 300,
+    imageSrc: "/products/artwork-04.png",
+    categoryIds: ["im-a-drama-queen", "shop-for-my-life"],
   },
   {
     id: "artwork-05",
-    name: "Artwork 05",
-    price: 129,
-    imageSrc: "/products/product-05.svg",
+    name: "The Garden",
+    price: 250,
+    imageSrc: "/products/artwork-05.png",
+    categoryIds: ["simple-for-me"],
   },
   {
     id: "artwork-06",
-    name: "Artwork 06",
-    price: 139,
-    imageSrc: "/products/product-06.svg",
+    name: "Ruby Necklace",
+    price: 300,
+    imageSrc: "/products/artwork-06.png",
+    categoryIds: ["im-a-drama-queen"],
   },
   {
     id: "artwork-07",
-    name: "Artwork 07",
-    price: 149,
-    imageSrc: "/products/product-07.svg",
+    name: "Silver Snake",
+    price: 350,
+    imageSrc: "/products/artwork-07.png",
+    categoryIds: ["im-a-drama-queen", "darkness-my-old-friend"],
   },
   {
     id: "artwork-08",
-    name: "Artwork 08",
-    price: 159,
-    imageSrc: "/products/product-08.svg",
+    name: "Green and Gold",
+    price: 290,
+    imageSrc: "/products/artwork-08.png",
+    categoryIds: ["im-a-drama-queen", "darkness-my-old-friend"],
   },
   {
     id: "artwork-09",
-    name: "Artwork 09",
-    price: 169,
-    imageSrc: "/products/product-09.svg",
+    name: "Blood and Silver",
+    price: 300,
+    imageSrc: "/products/artwork-09.png",
+    categoryIds: ["darkness-my-old-friend", "im-a-drama-queen"],
   },
   {
     id: "artwork-10",
-    name: "Artwork 10",
-    price: 189,
-    imageSrc: "/products/product-10.svg",
+    name: "Sushi Bar",
+    price: 300,
+    imageSrc: "/products/artwork-10.png",
+    categoryIds: ["simple-for-me", "shop-for-my-life"],
+  },
+  {
+    id: "artwork-11",
+    name: "Pink Paradise",
+    price: 300,
+    imageSrc: "/products/artwork-11.png",
+    categoryIds: ["simple-for-me"],
   },
 ] as const;
 
@@ -82,24 +103,28 @@ export const ACCESSORIES_PRODUCTS: readonly Product[] = [
     name: "Accessory 01",
     price: 49,
     imageSrc: "/products/product-01.svg",
+    categoryIds: [],
   },
   {
     id: "accessory-02",
     name: "Accessory 02",
     price: 59,
     imageSrc: "/products/product-02.svg",
+    categoryIds: [],
   },
   {
     id: "accessory-03",
     name: "Accessory 03",
     price: 69,
     imageSrc: "/products/product-03.svg",
+    categoryIds: [],
   },
   {
     id: "accessory-04",
     name: "Accessory 04",
     price: 79,
     imageSrc: "/products/product-04.svg",
+    categoryIds: [],
   },
 ] as const;
 

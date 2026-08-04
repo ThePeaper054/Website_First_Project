@@ -214,13 +214,13 @@ test.describe("nav menu", () => {
       page.getByRole("heading", { name: "Shop", level: 1 }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Artwork 01", level: 2 }),
+      page.getByRole("heading", { name: "Night Flower", level: 2 }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Artwork 10", level: 2 }),
+      page.getByRole("heading", { name: "Sushi Bar", level: 2 }),
     ).toBeVisible();
-    await expect(page.getByRole("heading", { level: 2 })).toHaveCount(10);
-    await expect(page.getByText("₪89").first()).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2 })).toHaveCount(11);
+    await expect(page.getByText("₪250").first()).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Accessory 01", level: 2 }),
     ).toHaveCount(0);
@@ -240,7 +240,7 @@ test.describe("nav menu", () => {
     ).toBeVisible();
     await expect(page.getByRole("heading", { level: 2 })).toHaveCount(4);
     await expect(
-      page.getByRole("heading", { name: "Artwork 01", level: 2 }),
+      page.getByRole("heading", { name: "Night Flower", level: 2 }),
     ).toHaveCount(0);
   });
 
