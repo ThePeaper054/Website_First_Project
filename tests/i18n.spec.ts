@@ -36,7 +36,7 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
-    await expect(page.locator("#home")).toContainText("Home");
+    await expect(page.locator("#home")).toContainText("Nara Nails");
 
     const switcher = await languageTrigger(page);
     await switcher.hover();
@@ -44,14 +44,14 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "he");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.locator("#home")).toContainText("בית");
+    await expect(page.locator("#home")).toContainText("Nara Nails");
 
     await page.reload();
     await disableNextDevOverlay(page);
 
     await expect(page.locator("html")).toHaveAttribute("lang", "he");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.locator("#home")).toContainText("בית");
+    await expect(page.locator("#home")).toContainText("Nara Nails");
   });
 
   test("translates nav menu chrome", async ({ page }) => {
@@ -84,7 +84,7 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "ru");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
-    await expect(page.locator("#home")).toContainText("Главная");
+    await expect(page.locator("#home")).toContainText("Nara Nails");
   });
 
   test("closes language menu when pointer leaves", async ({ page }) => {
@@ -181,7 +181,7 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "ru");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
-    await expect(page.locator("#home")).toContainText("Главная");
+    await expect(page.locator("#home")).toContainText("Nara Nails");
   });
 
   test("uses cookie when localStorage has no locale", async ({
@@ -203,7 +203,7 @@ test.describe("i18n", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.locator("#home")).toContainText("الرئيسية");
+    await expect(page.locator("#home")).toContainText("Nara Nails");
   });
 });
 
@@ -221,6 +221,6 @@ test.describe("i18n touch", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.locator("#home")).toContainText("الرئيسية");
+    await expect(page.locator("#home")).toContainText("Nara Nails");
   });
 });

@@ -85,6 +85,65 @@ test.describe("nav menu", () => {
       .toBe(true);
   });
 
+  test("welcome brand morphs into the nav logo at Artwork", async ({
+    page,
+  }) => {
+    await gotoApp(page);
+
+    const welcomeBrand = page.locator("[data-welcome-brand]");
+    const navBrand = page.locator("[data-brand-slot]");
+
+    await expect(welcomeBrand).toBeVisible();
+    await expect
+      .poll(async () => {
+        const opacity = await welcomeBrand.evaluate(
+          (el) => getComputedStyle(el).opacity,
+        );
+        return Number(opacity);
+      })
+      .toBeGreaterThan(0.9);
+    await expect
+      .poll(async () => {
+        const opacity = await navBrand.evaluate(
+          (el) => getComputedStyle(el).opacity,
+        );
+        return Number(opacity);
+      })
+      .toBeLessThan(0.1);
+
+    await openMenu(page);
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("link", { name: "Artwork" })
+      .click();
+    await expect
+      .poll(async () => sectionAligned(page, "artwork"), { timeout: 3000 })
+      .toBe(true);
+
+    await expect
+      .poll(async () => {
+        const opacity = await navBrand.evaluate(
+          (el) => getComputedStyle(el).opacity,
+        );
+        return Number(opacity);
+      })
+      .toBeGreaterThan(0.9);
+    await expect
+      .poll(async () => {
+        const welcome = page.locator("[data-welcome-brand]");
+        if ((await welcome.count()) === 0) return true;
+        const style = await welcome.evaluate((el) => {
+          const computed = getComputedStyle(el);
+          return {
+            opacity: Number(computed.opacity),
+            visibility: computed.visibility,
+          };
+        });
+        return style.visibility === "hidden" || style.opacity < 0.1;
+      })
+      .toBe(true);
+  });
+
   test("What's best toggle keeps keyboard focus on the control", async ({
     page,
   }) => {

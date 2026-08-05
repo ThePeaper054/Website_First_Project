@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandMorphProvider } from "@/components/BrandMorph";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   MenuModalityProvider,
@@ -36,7 +37,9 @@ function AppShellContent({ children }: { children: ReactNode }) {
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <MenuModalityProvider>
-      <AppShellContent>{children}</AppShellContent>
+      <BrandMorphProvider>
+        <AppShellContent>{children}</AppShellContent>
+      </BrandMorphProvider>
     </MenuModalityProvider>
   );
 }
