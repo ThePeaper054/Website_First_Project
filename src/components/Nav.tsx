@@ -1,5 +1,6 @@
 "use client";
 
+import { navBrandOpacity, useBrandMorph } from "@/components/BrandMorph";
 import { useMenuModality } from "@/components/MenuModality";
 import Image from "next/image";
 import Link from "next/link";
@@ -171,6 +172,7 @@ function scrollWhenReady(hash: string, updateHistory = true, smooth = true) {
 export function Nav() {
   const { t } = useLocale();
   const { setMenuOpen } = useMenuModality();
+  const { progress, morphActive } = useBrandMorph();
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -180,6 +182,10 @@ export function Nav() {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const pendingHashRef = useRef<string | null>(null);
+  const onHome = pathname === "/";
+  const brandOpacity =
+    onHome && morphActive ? navBrandOpacity(progress, morphActive) : 1;
+  const brandHidden = open || brandOpacity < 0.05;
 
   const closeMenu = () => {
     setOpen(false);
@@ -342,10 +348,14 @@ export function Nav() {
 
           <Link
             href="/#home"
-            className={`shrink-0 ${open ? "pointer-events-none" : ""}`}
+            data-brand-slot
+            className={`shrink-0 ${
+              open || brandOpacity < 0.05 ? "pointer-events-none" : ""
+            }`}
+            style={{ opacity: open ? 0 : brandOpacity }}
             aria-label={t("nav.homeAria")}
-            aria-hidden={open}
-            tabIndex={open ? -1 : undefined}
+            aria-hidden={brandHidden}
+            tabIndex={brandHidden ? -1 : undefined}
             onClick={(event) => onHashClick(event, "#home")}
           >
             <Image

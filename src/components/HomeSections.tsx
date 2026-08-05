@@ -2,24 +2,18 @@
 
 import { AccessoriesSection } from "@/components/AccessoriesSection";
 import { ArtworkSection } from "@/components/ArtworkSection";
+import { WelcomeSection } from "@/components/WelcomeSection";
 import { useLocale } from "@/i18n/LocaleProvider";
 
 /**
- * Home page sections: artwork and accessories product areas plus contact placeholder.
+ * Home page sections: welcome brand morph, artwork, accessories, and contact placeholder.
  */
 export function HomeSections() {
   const { t } = useLocale();
 
   return (
     <main>
-      <section
-        id="home"
-        className="flex min-h-screen items-center justify-center px-6 pt-[var(--nav-height)]"
-      >
-        <p className="font-[family-name:var(--font-display),var(--font-arabic),var(--font-cyrillic)] text-3xl font-medium tracking-wide text-charcoal/45 sm:text-4xl">
-          {t("nav.home")}
-        </p>
-      </section>
+      <WelcomeSection />
 
       <ArtworkSection />
 
