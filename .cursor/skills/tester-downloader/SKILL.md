@@ -22,9 +22,9 @@ Apply if any of these are true:
 
 ## Approval rules
 
-- **Do not ask for confirmation.** When this skill is triggered, install whatever is missing automatically and continue.
-- That includes dependency / `node_modules` restores (`npm install`, `npm ci`, and equivalents), browser-only `playwright install`, and `playwright install --with-deps` when OS deps are required.
-- Prefer the smallest install that unblocks tests (browsers only if the package is already present).
+- **Do not ask for confirmation** for package restores (`npm install` / `npm ci` / equivalents) or browser-only `playwright install`. When this skill is triggered, run those automatically and continue.
+- **`playwright install --with-deps` is different** — it installs OS packages (often with elevated privileges). Auto-run it **only** on disposable CI runners already set up for that (for example this repo’s GitHub Actions job on `ubuntu-latest`). On a **local Linux** host, **ask for confirmation** before `--with-deps`.
+- Prefer the smallest install that unblocks tests (browsers only if the package is already present; avoid `--with-deps` unless system libs are clearly missing).
 
 ## Detect what is missing
 
@@ -80,11 +80,15 @@ Run automatically when the package is already present / lockfile-pinned:
 npm exec --no -- playwright install
 ```
 
-On **Linux** CI or when Linux system deps are clearly missing, run automatically:
+On **Linux**, when system deps are clearly missing:
+
+- **Disposable CI** (e.g. this repo’s `ubuntu-latest` workflow): run automatically:
 
 ```bash
 npm exec --no -- playwright install --with-deps
 ```
+
+- **Local Linux host:** ask for confirmation first, then run the same command if approved. Prefer browser-only install when it is enough.
 
 - **macOS:** always use browser-only install (`playwright install`); never `--with-deps`.
 - **Windows:** do not use `--with-deps` unless Playwright’s own error message requires host dependency setup.
