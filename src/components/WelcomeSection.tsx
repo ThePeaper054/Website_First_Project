@@ -59,8 +59,6 @@ export function WelcomeSection() {
   const lastPublishedProgress = useRef(-1);
   const [slideIndex, setSlideIndex] = useState(0);
 
-  menuOpenRef.current = menuOpen;
-
   useEffect(() => {
     /**
      * Advances to the next welcome slide while the tab is visible.
@@ -164,6 +162,8 @@ export function WelcomeSection() {
   }, [setMorphActive, setProgress]);
 
   useLayoutEffect(() => {
+    menuOpenRef.current = menuOpen;
+
     const progress = progressRef.current;
     const brandOpacity = menuOpen ? 0 : welcomeBrandOpacity(progress);
     const slidesOpacity = menuOpen ? 0 : welcomeSlidesOpacity(progress);
